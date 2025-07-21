@@ -11,6 +11,7 @@ interface SimpleMenuItem {
   name: string
   description: string
   price: number
+  image?: string
 }
 
 type MenuItemType = 'pizzas' | 'appetizers' | 'desserts' | 'drinks'
@@ -115,9 +116,9 @@ export default function OrderOnlinePage() {
             <Link
               key={pizza.id}
               href={`/order-online/${pizza.id}`}
-              className='block'
+              className='block h-full'
             >
-              <div className='border border-primary hover:border-accent transition-all'>
+              <div className='border border-primary hover:border-accent transition-all h-full flex flex-col'>
                 <div className='relative h-48 w-full'>
                   <Image
                     src={pizza.image}
@@ -133,15 +134,17 @@ export default function OrderOnlinePage() {
                     </div>
                   )}
                 </div>
-                <div className='p-6'>
+                <div className='p-6 flex flex-col flex-grow'>
                   <div className='flex justify-between items-center mb-3'>
                     <h3 className='text-xl font-bold'>{pizza.name}</h3>
                     <span className='text-xl'>${pizza.price}</span>
                   </div>
                   <p className='text-muted mb-6'>{pizza.description}</p>
-                  <button className='w-full bg-primary text-white py-3 font-medium hover:bg-primary-hover transition-colors cursor-pointer'>
-                    Customize
-                  </button>
+                  <div className='mt-auto'>
+                    <button className='w-full bg-primary text-white py-3 font-medium hover:bg-primary-hover transition-colors cursor-pointer'>
+                      Customize
+                    </button>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -152,17 +155,35 @@ export default function OrderOnlinePage() {
           (items as SimpleMenuItem[]).map((item, index) => (
             <div
               key={index}
-              className='border border-primary hover:border-accent transition-all'
+              className={`border border-primary hover:border-accent transition-all ${
+                type === 'appetizers' ? 'h-full flex flex-col' : ''
+              }`}
             >
-              <div className='p-6'>
+              {item.image && type === 'appetizers' && (
+                <div className='relative h-48 w-full'>
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+              <div
+                className={`p-6 ${
+                  type === 'appetizers' ? 'flex flex-col flex-grow' : ''
+                }`}
+              >
                 <div className='flex justify-between items-center mb-3'>
                   <h3 className='text-xl font-bold'>{item.name}</h3>
                   <span className='text-xl'>${item.price}</span>
                 </div>
                 <p className='text-muted mb-6'>{item.description}</p>
-                <button className='w-full bg-primary text-white py-3 font-medium hover:bg-primary-hover transition-colors cursor-pointer'>
-                  Add to Order
-                </button>
+                <div className={type === 'appetizers' ? 'mt-auto' : ''}>
+                  <button className='w-full bg-primary text-white py-3 font-medium hover:bg-primary-hover transition-colors cursor-pointer'>
+                    Add to Order
+                  </button>
+                </div>
               </div>
             </div>
           ))}

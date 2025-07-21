@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { MenuItem } from '@/types'
+import { useTheme } from '@/contexts/ThemeContext'
 
 // Define available toppings directly in the component
 const availableToppings = [
@@ -34,6 +35,7 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
   const [selectedSize, setSelectedSize] = useState(sizes[1]) // Default to Medium
   const [selectedToppings, setSelectedToppings] = useState<string[]>([])
   const [quantity, setQuantity] = useState(1)
+  const { resolvedTheme } = useTheme()
 
   // Calculate total price
   const calculateTotalPrice = () => {
@@ -68,7 +70,9 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
               key={size.name}
               className={`py-3 px-4 border cursor-pointer ${
                 selectedSize.name === size.name
-                  ? 'border-primary bg-black text-white'
+                  ? resolvedTheme === 'dark'
+                    ? 'border-primary border-2 bg-black text-white'
+                    : 'border-primary border-2 bg-primary text-white'
                   : 'border-gray-800 text-gray-400 hover:border-primary'
               }`}
               onClick={() => setSelectedSize(size)}
@@ -97,7 +101,9 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
               key={topping.name}
               className={`py-2 px-3 border flex justify-between items-center cursor-pointer ${
                 selectedToppings.includes(topping.name)
-                  ? 'border-accent bg-black text-white'
+                  ? resolvedTheme === 'dark'
+                    ? 'border-primary border-2 bg-black text-white'
+                    : 'border-primary border-2 bg-primary text-white'
                   : 'border-gray-800 text-gray-400 hover:border-primary'
               }`}
               onClick={() => toggleTopping(topping.name)}
@@ -138,10 +144,6 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
       {/* Add to Cart Button */}
       <button className='w-full bg-primary hover:bg-primary-hover py-4 text-white text-lg font-medium transition-colors cursor-pointer'>
         Add to Cart
-      </button>
-
-      <button className='w-full border border-accent text-accent hover:bg-accent hover:text-white py-3 mt-4 text-lg font-medium transition-colors cursor-pointer'>
-        Add to Favorites
       </button>
     </div>
   )

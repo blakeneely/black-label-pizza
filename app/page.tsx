@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="hero-section relative h-[70vh] flex items-center bg-theme bg-[url('/images/hero-bg.png')] bg-cover bg-center">
-        <div className='container mx-auto px-4'>
+      <section className="hero-section relative h-[70vh] flex items-center bg-theme bg-[url('/images/hero-bg.png')] bg-cover bg-center before:content-[''] before:absolute before:inset-0 before:bg-black before:opacity-50 before:z-0">
+        <div className='container mx-auto px-4 relative z-10'>
           <div className='max-w-xl'>
             <h1 className='text-5xl font-bold mb-4'>
               Nashville&apos;s Finest Pizza Tradition
@@ -24,7 +24,7 @@ export default function Home() {
               </Link>
               <Link
                 href='/order-online'
-                className='px-8 py-3 border border-accent text-accent hover:bg-accent hover:text-white transition-colors font-medium'
+                className='px-8 py-3 border border-accent bg-accent text-white hover:brightness-90 transition-all font-medium'
               >
                 Order Online
               </Link>
@@ -156,7 +156,7 @@ export default function Home() {
               </p>
               <Link
                 href='/menu'
-                className='inline-block px-8 py-3 border border-white text-white hover:bg-white hover:text-primary transition-colors font-medium'
+                className='inline-block px-8 py-3 border border-white text-white hover:bg-white hover:text-black transition-colors font-medium'
               >
                 Explore Our Menu
               </Link>
