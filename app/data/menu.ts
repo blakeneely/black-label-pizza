@@ -85,22 +85,26 @@ export const appetizers = [
     name: 'Garlic Bread',
     description: 'Toasted Italian bread with garlic butter and herbs.',
     price: 5.99,
+    image: '/images/garlic-bread.jpg',
   },
   {
     name: 'Mozzarella Sticks',
     description: 'Golden-fried mozzarella sticks with marinara sauce.',
     price: 8.99,
+    image: '/images/cheese-sticks.jpg',
   },
   {
     name: 'Bruschetta',
     description:
       'Toasted bread topped with tomatoes, basil, garlic, and olive oil.',
     price: 7.99,
+    image: '/images/bruschetta.jpg',
   },
   {
     name: 'Buffalo Wings',
     description: 'Crispy chicken wings tossed in spicy buffalo sauce.',
     price: 10.99,
+    image: '/images/buffalo-wings.jpg',
   },
 ]
 
