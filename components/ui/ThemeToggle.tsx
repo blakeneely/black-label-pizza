@@ -20,7 +20,7 @@ export default function ThemeToggle() {
     <div className='relative inline-block'>
       <button
         onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-        className='flex items-center justify-center w-10 h-10 rounded-full bg-card border border-theme hover:border-primary transition-colors cursor-pointer'
+        className='flex items-center justify-center w-10 h-10 rounded-full bg-card cursor-pointer'
         aria-label='Toggle theme'
       >
         {resolvedTheme === 'dark' ? (

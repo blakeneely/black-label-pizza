@@ -12,7 +12,7 @@ export default function Footer() {
               Authentic Chicago-style pizza made with premium ingredients and
               traditional recipes.
             </p>
-            <p className='text-muted'>Established 2010</p>
+            <p className='text-muted'>Established 2018</p>
           </div>
 
           <div>
@@ -30,7 +30,7 @@ export default function Footer() {
             <div className='h-1 w-12 bg-primary mb-6'></div>
             <ul className='space-y-2 text-muted'>
               <li>123 Pizza Street</li>
-              <li>Chicago, IL 60601</li>
+              <li>Nashville, TN 37205</li>
               <li>(312) 555-0123</li>
               <li>info@blacklabelpizza.com</li>
             </ul>
