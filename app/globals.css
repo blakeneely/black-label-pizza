@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+:root {
+  /* Base colors */
+  --color-accent: #b91c1c;
+  --color-accent-hover: #991b1b;
+  --color-primary: #1a472a;
+  --color-primary-hover: #2d5d3b;
+
+  /* Light theme colors */
+  --color-light-background: #ffffff;
+  --color-light-card: #f9fafb;
+  --color-light-text: #111827;
+  --color-light-muted: #4b5563;
+  --color-light-border: #e5e7eb;
+
+  /* Dark theme colors */
+  --color-dark-background: #000000;
+  --color-dark-card: #000000;
+  --color-dark-text: #f9fafb;
+  --color-dark-muted: #9ca3af;
+  --color-dark-border: #1a472a; /* Primary green color for borders */
+
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Default to dark theme */
+:root {
+  --color-background: var(--color-dark-background);
+  --color-card: var(--color-dark-card);
+  --color-text: var(--color-dark-text);
+  --color-muted: var(--color-dark-muted);
+  --color-border: var(--color-dark-border);
+}
+
+/* Light theme class */
+.light-theme {
+  --color-background: var(--color-light-background);
+  --color-card: var(--color-light-card);
+  --color-text: var(--color-light-text);
+  --color-muted: var(--color-light-muted);
+  --color-border: var(--color-light-border);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+/* Theme-aware utility classes */
+.bg-theme {
+  background-color: var(--color-background);
+}
+.bg-card {
+  background-color: var(--color-card);
+}
+.text-theme {
+  color: var(--color-text);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.border-theme {
+  border-color: var(--color-border);
+}
+
+/* Primary color utilities */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+.bg-primary-hover {
+  background-color: var(--color-primary-hover);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+/* Accent color utilities */
+.bg-accent {
+  background-color: var(--color-accent);
+}
+.text-accent {
+  color: var(--color-accent);
+}
+.border-accent {
+  border-color: var(--color-accent);
+}
+
+/* Always light text on primary buttons */
+.bg-primary,
+.hover\:bg-primary:hover,
+.bg-primary-hover,
+.hover\:bg-primary-hover:hover {
+  color: white !important;
+}
+
+/* Always light text on accent background */
+.bg-accent,
+.hover\:bg-accent:hover {
+  color: white !important;
+}
+
+/* Always light text in hero section */
+.hero-section {
+  color: white !important;
+}
+.hero-section h1,
+.hero-section p {
+  color: white !important;
+}
+
+/* Primary green section */
+.primary-section {
+  background-color: var(--color-primary);
+  color: white !important;
+}
+.primary-section h2,
+.primary-section p {
+  color: white !important;
+}
+
+/* Hover utilities */
+.hover\:bg-primary-hover:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+.hover\:bg-accent:hover {
+  background-color: var(--color-accent) !important;
+}
