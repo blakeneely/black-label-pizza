@@ -11,10 +11,11 @@ export default function Home() {
             <h1 className='text-5xl font-bold mb-4'>
               Nashville&apos;s Finest Pizza Tradition
             </h1>
-            <p className='text-xl mb-8'>
+            <p className='text-xl mb-4'>
               Authentic tavern pizzas made with premium ingredients and
               traditional recipes.
             </p>
+            <p className='text-xl mb-8'>Call (312) 555-0123 to order now!</p>
             <div className='flex gap-4'>
               <Link
                 href='/menu'
@@ -130,17 +131,18 @@ export default function Home() {
       <section className='primary-section py-20'>
         <div className='container mx-auto px-4'>
           <div className='flex flex-col md:flex-row items-center gap-12'>
-            <div className='md:w-1/2'>
-              <div className='relative h-96 w-full border border-white'>
+            <div className='w-full md:w-1/2'>
+              <div className='relative w-full h-64 md:h-96 border border-white'>
                 <Image
                   src='/images/pizzeria.jpeg'
                   alt='Our Pizzeria'
                   fill
                   style={{ objectFit: 'cover' }}
+                  priority
                 />
               </div>
             </div>
-            <div className='md:w-1/2'>
+            <div className='w-full md:w-1/2 mt-8 md:mt-0'>
               <h2 className='text-3xl font-bold mb-6'>Our Story</h2>
               <div className='h-1 w-16 bg-accent mb-6'></div>
               <p className='mb-6'>

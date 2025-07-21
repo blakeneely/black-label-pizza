@@ -7,6 +7,10 @@ import Footer from '@/components/layout/Footer'
 export const metadata: Metadata = {
   title: 'Black Label Pizza',
   description: 'Authentic Chicago-style tavern pizza in Nashville',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/images/white-logo.png',
+  },
 }
 
 export default function RootLayout({
