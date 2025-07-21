@@ -42,20 +42,6 @@ npm run dev
 - `/public` - Static assets
 - `/types` - TypeScript type definitions
 
-## Image Placeholders
-
-For a complete implementation, you would need to add the following images to the `/public/images` directory:
-
-- logo.png - Black Label Pizza logo
-- hero-bg.jpg - Hero background image
-- cheese.jpg - Image of cheese pizza
-- pepperoni.jpg - Image of pepperoni pizza
-- sausage.jpg - Image of sausage pizza
-- bacon-giardiniera.jpg - Image of bacon & giardiniera pizza
-- deluxe.jpg - Image of deluxe pizza
-- sausage-mushroom.jpg - Image of sausage & mushroom pizza
-- pizzeria.jpg - Image of the pizzeria interior
-
 ## License
 
 MIT
