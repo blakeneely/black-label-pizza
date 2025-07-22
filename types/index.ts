@@ -14,4 +14,28 @@ export interface CartItem {
   price: number
   quantity: number
   toppings?: Array<{ name: string; price: number }>
+  size?: string
+}
+
+export type OrderStatus = 'in_progress' | 'completed'
+
+export interface CustomerInfo {
+  name: string
+  phone: string
+  email: string
+  address: string
+  city: string
+  zipCode: string
+  cardNumber: string
+  cardExpiry: string
+  cardCVV: string
+}
+
+export interface Order {
+  id: string
+  items: CartItem[]
+  customer: CustomerInfo
+  status: OrderStatus
+  total: number
+  date: string
 }

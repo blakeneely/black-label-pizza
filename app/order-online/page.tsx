@@ -45,11 +45,11 @@ export default function OrderOnlinePage() {
 
       {/* Category Navigation */}
       <div className='flex justify-center mb-12 overflow-x-auto'>
-        <div className='inline-flex border-b border-primary'>
+        <div className='inline-flex border-b-2 border-primary'>
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'appetizers'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('appetizers')}
@@ -59,7 +59,7 @@ export default function OrderOnlinePage() {
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'pizza-classic'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('pizza-classic')}
@@ -69,7 +69,7 @@ export default function OrderOnlinePage() {
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'pizza-specialty'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('pizza-specialty')}
@@ -79,7 +79,7 @@ export default function OrderOnlinePage() {
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'pizza-vegetarian'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('pizza-vegetarian')}
@@ -89,7 +89,7 @@ export default function OrderOnlinePage() {
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'desserts'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('desserts')}
@@ -99,7 +99,7 @@ export default function OrderOnlinePage() {
           <button
             className={`px-6 py-3 font-medium transition-colors cursor-pointer ${
               activeCategory === 'drinks'
-                ? 'text-primary border-b-2 border-primary -mb-[1px]'
+                ? 'text-primary border-b-3 border-accent -mb-[1px]'
                 : 'text-muted hover:text-theme'
             }`}
             onClick={() => setActiveCategory('drinks')}

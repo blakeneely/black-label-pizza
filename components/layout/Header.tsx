@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import CartIcon from '@/components/ui/CartIcon'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -46,7 +47,7 @@ export default function Header() {
             height={60}
             className='mr-1'
           />
-          <div className='flex flex-col -space-y-1'>
+          <div className='flex flex-col -space-y-1 font-[Open_Sans]'>
             <h1 className='text-xl font-bold'>BLACK LABEL</h1>
             <span className='text-xs tracking-widest text-accent'>PIZZA</span>
           </div>
@@ -74,25 +75,38 @@ export default function Header() {
                 )}
               </Link>
             </li>
-            <li>
+            <li className='relative'>
               <Link
                 href='/order-online'
-                className={`px-4 py-2 transition-colors ${
-                  pathname === '/order-online' ||
-                  pathname.startsWith('/order-online/')
-                    ? 'bg-primary-hover'
-                    : 'bg-primary hover:bg-primary-hover'
-                }`}
+                className='hover:text-primary transition-colors'
               >
                 Order Online
+                {pathname === '/order-online' && (
+                  <span className='absolute bottom-[-8px] left-0 w-full h-[3px] bg-accent'></span>
+                )}
+              </Link>
+            </li>
+            <li className='relative'>
+              <Link
+                href='/store'
+                className='hover:text-primary transition-colors'
+              >
+                Store
+                {pathname === '/store' && (
+                  <span className='absolute bottom-[-8px] left-0 w-full h-[3px] bg-accent'></span>
+                )}
               </Link>
             </li>
           </ul>
-          <ThemeToggle />
+          <div className='flex items-center space-x-4'>
+            <CartIcon />
+            <ThemeToggle />
+          </div>
         </nav>
 
         {/* Mobile Navigation Toggle */}
         <div className='flex items-center md:hidden'>
+          <CartIcon />
           <ThemeToggle />
           <button
             className='ml-4 p-2 z-50'
@@ -136,7 +150,7 @@ export default function Header() {
 
       {/* Mobile Menu Slide-in Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full bg-theme border-l border-theme shadow-lg z-40 transform transition-transform duration-300 ease-in-out w-64 ${
+        className={`fixed top-0 right-0 h-full bg-theme shadow-lg z-40 transform transition-transform duration-300 ease-in-out w-64 ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -164,17 +178,26 @@ export default function Header() {
                 )}
               </Link>
             </li>
-            <li className='mt-6'>
+            <li className='relative'>
               <Link
                 href='/order-online'
-                className={`block text-xl py-3 px-6 text-center transition-colors ${
-                  pathname === '/order-online' ||
-                  pathname.startsWith('/order-online/')
-                    ? 'bg-primary-hover'
-                    : 'bg-primary hover:bg-primary-hover'
-                }`}
+                className='block text-xl py-2 hover:text-primary transition-colors'
               >
                 Order Online
+                {pathname === '/order-online' && (
+                  <span className='absolute bottom-0 left-0 w-16 h-[3px] bg-accent'></span>
+                )}
+              </Link>
+            </li>
+            <li className='relative'>
+              <Link
+                href='/store'
+                className='block text-xl py-2 hover:text-primary transition-colors'
+              >
+                Store
+                {pathname === '/store' && (
+                  <span className='absolute bottom-0 left-0 w-16 h-[3px] bg-accent'></span>
+                )}
               </Link>
             </li>
           </ul>

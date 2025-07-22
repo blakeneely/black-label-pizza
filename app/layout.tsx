@@ -1,4 +1,6 @@
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { CartProvider } from '@/contexts/CartContext'
+import { OrderProvider } from '@/contexts/OrderContext'
 import './globals.css'
 import { Metadata } from 'next'
 import Header from '@/components/layout/Header'
@@ -21,11 +23,15 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <ThemeProvider>
-        <body>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </body>
+        <CartProvider>
+          <OrderProvider>
+            <body>
+              <Header />
+              <main>{children}</main>
+              <Footer />
+            </body>
+          </OrderProvider>
+        </CartProvider>
       </ThemeProvider>
     </html>
   )

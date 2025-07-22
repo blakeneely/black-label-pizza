@@ -28,7 +28,7 @@ export default function Footer() {
           <div>
             <h3 className='text-xl font-bold mb-4'>CONTACT</h3>
             <div className='h-1 w-12 bg-primary mb-6'></div>
-            <ul className='space-y-2 text-muted'>
+            <ul className='text-muted'>
               <li>123 Pizza Street</li>
               <li>Nashville, TN 37205</li>
               <li>(312) 555-0123</li>
