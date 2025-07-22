@@ -43,7 +43,7 @@ export default function Home() {
 
           <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
             {/* Featured Pizza 1 */}
-            <div className='border border-primary hover:border-accent transition-all'>
+            <div className='border border-primary hover:border-accent transition-all h-full flex flex-col'>
               <div className='relative h-64 w-full'>
                 <Image
                   src='/images/deluxe.jpg'
@@ -57,14 +57,14 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className='p-6'>
+              <div className='p-6 flex flex-col flex-grow'>
                 <h3 className='text-xl font-bold mb-2'>The Deluxe</h3>
-                <p className='text-muted mb-4'>
+                <p className='text-muted mb-4 flex-grow'>
                   Pepperoni, sausage, mushrooms, onions, and green peppers.
                 </p>
                 <Link
                   href='/order-online/deluxe'
-                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors'
+                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors mt-auto'
                 >
                   Order Now
                 </Link>
@@ -72,7 +72,7 @@ export default function Home() {
             </div>
 
             {/* Featured Pizza 2 */}
-            <div className='border border-primary hover:border-accent transition-all'>
+            <div className='border border-primary hover:border-accent transition-all h-full flex flex-col'>
               <div className='relative h-64 w-full'>
                 <Image
                   src='/images/pepperoni.jpg'
@@ -81,14 +81,14 @@ export default function Home() {
                   style={{ objectFit: 'cover' }}
                 />
               </div>
-              <div className='p-6'>
+              <div className='p-6 flex flex-col flex-grow'>
                 <h3 className='text-xl font-bold mb-2'>Classic Pepperoni</h3>
-                <p className='text-muted mb-4'>
+                <p className='text-muted mb-4 flex-grow'>
                   Classic cheese pizza topped with pepperoni.
                 </p>
                 <Link
                   href='/order-online/pepperoni'
-                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors'
+                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors mt-auto'
                 >
                   Order Now
                 </Link>
@@ -96,7 +96,7 @@ export default function Home() {
             </div>
 
             {/* Featured Pizza 3 */}
-            <div className='border border-primary hover:border-accent transition-all'>
+            <div className='border border-primary hover:border-accent transition-all h-full flex flex-col'>
               <div className='relative h-64 w-full'>
                 <Image
                   src='/images/bacon-giardiniera.jpg'
@@ -110,14 +110,14 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className='p-6'>
+              <div className='p-6 flex flex-col flex-grow'>
                 <h3 className='text-xl font-bold mb-2'>Bacon & Giardiniera</h3>
-                <p className='text-muted mb-4'>
+                <p className='text-muted mb-4 flex-grow'>
                   Crispy bacon and spicy Chicago-style giardiniera.
                 </p>
                 <Link
                   href='/order-online/bacon-giardiniera'
-                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors'
+                  className='inline-block w-full text-center bg-primary hover:bg-primary-hover py-3 transition-colors mt-auto'
                 >
                   Order Now
                 </Link>

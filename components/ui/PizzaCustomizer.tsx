@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { MenuItem } from '@/types'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useCart } from '@/contexts/CartContext'
+import { useRouter } from 'next/navigation'
 
 // Define available toppings directly in the component
 const availableToppings = [
@@ -35,7 +37,10 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
   const [selectedSize, setSelectedSize] = useState(sizes[1]) // Default to Medium
   const [selectedToppings, setSelectedToppings] = useState<string[]>([])
   const [quantity, setQuantity] = useState(1)
+  const [addedToCart, setAddedToCart] = useState(false)
   const { resolvedTheme } = useTheme()
+  const { addToCart } = useCart()
+  const router = useRouter()
 
   // Calculate total price
   const calculateTotalPrice = () => {
@@ -57,6 +62,41 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
     } else {
       setSelectedToppings([...selectedToppings, toppingName])
     }
+  }
+
+  // Handle add to cart
+  const handleAddToCart = () => {
+    // Get selected toppings with prices
+    const toppingsWithPrices = selectedToppings.map((toppingName) => {
+      const topping = availableToppings.find((t) => t.name === toppingName)
+      return { name: toppingName, price: topping ? topping.price : 0 }
+    })
+
+    // Create cart item
+    const cartItem = {
+      id: pizza.id,
+      name: pizza.name,
+      price: calculateTotalPrice() / quantity, // Price per item including toppings and size
+      quantity,
+      toppings: toppingsWithPrices,
+      size: selectedSize.name,
+    }
+
+    // Add to cart
+    addToCart(cartItem)
+
+    // Show success message
+    setAddedToCart(true)
+
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setAddedToCart(false)
+    }, 3000)
+  }
+
+  // Handle view cart
+  const handleViewCart = () => {
+    router.push('/cart')
   }
 
   return (
@@ -142,9 +182,26 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
       </div>
 
       {/* Add to Cart Button */}
-      <button className='w-full bg-primary hover:bg-primary-hover py-4 text-white text-lg font-medium transition-colors cursor-pointer'>
-        Add to Cart
-      </button>
+      {addedToCart ? (
+        <div className='flex flex-col space-y-4'>
+          <div className='bg-green-600 text-white py-3 px-4 text-center'>
+            Added to cart!
+          </div>
+          <button
+            onClick={handleViewCart}
+            className='w-full bg-primary hover:bg-primary-hover py-4 text-white text-lg font-medium transition-colors cursor-pointer'
+          >
+            View Cart
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleAddToCart}
+          className='w-full bg-primary hover:bg-primary-hover py-4 text-white text-lg font-medium transition-colors cursor-pointer'
+        >
+          Add to Cart
+        </button>
+      )}
     </div>
   )
 }
