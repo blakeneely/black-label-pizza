@@ -121,7 +121,23 @@ export default function StorePage() {
                           {item.toppings && item.toppings.length > 0 && (
                             <span className='text-xs text-gray-400'>
                               {' '}
-                              with {item.toppings.map((t) => t.name).join(', ')}
+                              with{' '}
+                              {item.toppings
+                                .filter((t) => t.added)
+                                .map((t) => t.name)
+                                .join(', ')}
+                              {item.toppings.some((t) => t.removed) && (
+                                <>
+                                  {item.toppings.some((t) => t.added)
+                                    ? ', '
+                                    : ''}
+                                  without{' '}
+                                  {item.toppings
+                                    .filter((t) => t.removed)
+                                    .map((t) => t.name)
+                                    .join(', ')}
+                                </>
+                              )}
                             </span>
                           )}
                         </div>

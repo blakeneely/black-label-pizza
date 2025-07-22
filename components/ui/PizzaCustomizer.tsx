@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MenuItem } from '@/types'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useCart } from '@/contexts/CartContext'
@@ -8,18 +8,18 @@ import { useRouter } from 'next/navigation'
 
 // Define available toppings directly in the component
 const availableToppings = [
-  { name: 'Extra Cheese', price: 1.5 },
+  { name: 'Extra Cheese', price: 2 },
   { name: 'Pepperoni', price: 2 },
   { name: 'Sausage', price: 2 },
-  { name: 'Mushrooms', price: 1.5 },
-  { name: 'Onions', price: 1 },
-  { name: 'Green Peppers', price: 1 },
-  { name: 'Black Olives', price: 1.5 },
+  { name: 'Mushrooms', price: 2 },
+  { name: 'Onions', price: 2 },
+  { name: 'Green Peppers', price: 2 },
+  { name: 'Black Olives', price: 2 },
   { name: 'Bacon', price: 2 },
-  { name: 'Spinach', price: 1.5 },
-  { name: 'Pineapple', price: 1.5 },
-  { name: 'Jalapeños', price: 1 },
-  { name: 'Giardiniera', price: 1.5 },
+  { name: 'Spinach', price: 2 },
+  { name: 'Pineapple', price: 2 },
+  { name: 'Jalapeños', price: 2 },
+  { name: 'Giardiniera', price: 2 },
 ]
 
 // Define available sizes
@@ -29,48 +29,109 @@ const sizes = [
   { name: 'Large (16")', price: 3 },
 ]
 
+// Map pizza names to their default toppings
+const defaultToppings: Record<string, string[]> = {
+  'Classic Cheese': ['Extra Cheese'],
+  Pepperoni: ['Pepperoni'],
+  Sausage: ['Sausage'],
+  'The Deluxe': [
+    'Pepperoni',
+    'Sausage',
+    'Mushrooms',
+    'Onions',
+    'Green Peppers',
+  ],
+  'Meat Lovers': ['Pepperoni', 'Sausage', 'Bacon'],
+  'Sausage & Mushroom': ['Sausage', 'Mushrooms'],
+  'Bacon & Giardiniera': ['Bacon', 'Giardiniera'],
+  'Veggie Supreme': ['Mushrooms', 'Green Peppers', 'Onions', 'Black Olives'],
+  'Spinach & Mushroom': ['Spinach', 'Mushrooms'],
+}
+
 interface PizzaCustomizerProps {
   pizza: MenuItem
 }
 
 export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
   const [selectedSize, setSelectedSize] = useState(sizes[1]) // Default to Medium
+  const [initialToppings, setInitialToppings] = useState<string[]>([])
   const [selectedToppings, setSelectedToppings] = useState<string[]>([])
+  const [removedToppings, setRemovedToppings] = useState<string[]>([])
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
   const { resolvedTheme } = useTheme()
   const { addToCart } = useCart()
   const router = useRouter()
 
+  // Initialize default toppings based on pizza type
+  useEffect(() => {
+    const pizzaDefaults = defaultToppings[pizza.name] || []
+    setInitialToppings(pizzaDefaults)
+    setSelectedToppings(pizzaDefaults)
+    setRemovedToppings([])
+  }, [pizza.name])
+
   // Calculate total price
   const calculateTotalPrice = () => {
     const basePrice = pizza.price
     const sizePrice = selectedSize.price
 
-    const toppingsPrice = selectedToppings.reduce((total, topping) => {
-      const toppingObj = availableToppings.find((t) => t.name === topping)
-      return total + (toppingObj ? toppingObj.price : 0)
-    }, 0)
+    // Calculate price for added toppings (those not in initialToppings)
+    const addedToppingsPrice = selectedToppings
+      .filter((topping) => !initialToppings.includes(topping))
+      .reduce((total, topping) => {
+        const toppingObj = availableToppings.find((t) => t.name === topping)
+        return total + (toppingObj ? toppingObj.price : 0)
+      }, 0)
 
-    return (basePrice + sizePrice + toppingsPrice) * quantity
+    return (basePrice + sizePrice + addedToppingsPrice) * quantity
   }
 
   // Toggle topping selection
   const toggleTopping = (toppingName: string) => {
     if (selectedToppings.includes(toppingName)) {
+      // Remove topping
       setSelectedToppings(selectedToppings.filter((t) => t !== toppingName))
+
+      // If this was an initial topping, add it to removed toppings
+      if (initialToppings.includes(toppingName)) {
+        setRemovedToppings([...removedToppings, toppingName])
+      }
     } else {
+      // Add topping
       setSelectedToppings([...selectedToppings, toppingName])
+
+      // If this was previously removed, remove it from removed toppings
+      if (initialToppings.includes(toppingName)) {
+        setRemovedToppings(removedToppings.filter((t) => t !== toppingName))
+      }
     }
   }
 
   // Handle add to cart
   const handleAddToCart = () => {
-    // Get selected toppings with prices
-    const toppingsWithPrices = selectedToppings.map((toppingName) => {
-      const topping = availableToppings.find((t) => t.name === toppingName)
-      return { name: toppingName, price: topping ? topping.price : 0 }
+    // Get added toppings with prices (toppings not in initialToppings)
+    const addedToppingsWithPrices = selectedToppings
+      .filter((topping) => !initialToppings.includes(topping))
+      .map((toppingName) => {
+        const topping = availableToppings.find((t) => t.name === toppingName)
+        return {
+          name: toppingName,
+          price: topping ? topping.price : 0,
+          added: true,
+        }
+      })
+
+    // Get removed toppings
+    const removedToppingsWithPrices = removedToppings.map((toppingName) => {
+      return { name: toppingName, price: 0, removed: true }
     })
+
+    // Combine both for display
+    const toppingsWithPrices = [
+      ...addedToppingsWithPrices,
+      ...removedToppingsWithPrices,
+    ]
 
     // Create cart item
     const cartItem = {
@@ -80,6 +141,7 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
       quantity,
       toppings: toppingsWithPrices,
       size: selectedSize.name,
+      removedToppings: removedToppings,
     }
 
     // Add to cart
@@ -97,6 +159,11 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
   // Handle view cart
   const handleViewCart = () => {
     router.push('/cart')
+  }
+
+  // Determine if a topping is initial (included in the pizza by default)
+  const isInitialTopping = (toppingName: string) => {
+    return initialToppings.includes(toppingName)
   }
 
   return (
@@ -134,24 +201,36 @@ export default function PizzaCustomizer({ pizza }: PizzaCustomizerProps) {
 
       {/* Toppings Selection */}
       <div className='mb-8'>
-        <h3 className='text-xl font-bold mb-4'>Extra Toppings</h3>
+        <h3 className='text-xl font-bold mb-4'>Toppings</h3>
         <div className='grid grid-cols-2 gap-3'>
-          {availableToppings.map((topping) => (
-            <button
-              key={topping.name}
-              className={`py-2 px-3 border flex justify-between items-center cursor-pointer ${
-                selectedToppings.includes(topping.name)
-                  ? resolvedTheme === 'dark'
-                    ? 'border-primary border-2 bg-black text-white'
-                    : 'border-primary border-2 bg-primary text-white'
-                  : 'border-gray-800 text-gray-400 hover:border-primary'
-              }`}
-              onClick={() => toggleTopping(topping.name)}
-            >
-              <span>{topping.name}</span>
-              <span>+${topping.price}</span>
-            </button>
-          ))}
+          {availableToppings.map((topping) => {
+            const isSelected = selectedToppings.includes(topping.name)
+            const isDefault = isInitialTopping(topping.name)
+
+            return (
+              <button
+                key={topping.name}
+                className={`py-2 px-3 border flex justify-between items-center cursor-pointer ${
+                  isSelected
+                    ? resolvedTheme === 'dark'
+                      ? 'border-primary border-2 bg-black text-white'
+                      : 'border-primary border-2 bg-primary text-white'
+                    : 'border-gray-800 text-gray-400 hover:border-primary'
+                }`}
+                onClick={() => toggleTopping(topping.name)}
+              >
+                <div className='flex items-center'>
+                  <span>{topping.name}</span>
+                  {isDefault && (
+                    <span className='ml-1 text-xs'>
+                      {isSelected ? '(Included)' : '(Removed)'}
+                    </span>
+                  )}
+                </div>
+                {!isDefault && <span>+${topping.price}</span>}
+              </button>
+            )
+          })}
         </div>
       </div>
 
