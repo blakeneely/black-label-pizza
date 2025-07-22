@@ -8,13 +8,21 @@ export interface MenuItem {
   featured?: boolean
 }
 
+export interface ToppingItem {
+  name: string
+  price: number
+  added?: boolean
+  removed?: boolean
+}
+
 export interface CartItem {
   id: string
   name: string
   price: number
   quantity: number
-  toppings?: Array<{ name: string; price: number }>
+  toppings?: ToppingItem[]
   size?: string
+  removedToppings?: string[]
 }
 
 export type OrderStatus = 'in_progress' | 'completed'

@@ -110,11 +110,22 @@ export default function CartPage() {
                   <div className='mt-2'>
                     <p className='text-sm text-gray-400'>Toppings:</p>
                     <ul className='text-sm text-gray-400'>
-                      {item.toppings.map((topping, i) => (
-                        <li key={i}>
-                          + {topping.name} (${topping.price.toFixed(2)})
-                        </li>
-                      ))}
+                      {item.toppings
+                        .filter((topping) => topping.added)
+                        .map((topping, i) => (
+                          <li key={`added-${i}`}>
+                            <span className='text-green-500'>+</span>{' '}
+                            {topping.name} (${topping.price.toFixed(2)})
+                          </li>
+                        ))}
+                      {item.toppings
+                        .filter((topping) => topping.removed)
+                        .map((topping, i) => (
+                          <li key={`removed-${i}`}>
+                            <span className='text-red-500'>-</span>{' '}
+                            {topping.name} (removed)
+                          </li>
+                        ))}
                     </ul>
                   </div>
                 )}

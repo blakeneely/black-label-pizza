@@ -104,9 +104,22 @@ export default function OrderConfirmationPage() {
                   </p>
                   {item.toppings && item.toppings.length > 0 && (
                     <ul className='text-sm text-gray-400 ml-4'>
-                      {item.toppings.map((topping, i) => (
-                        <li key={i}>+ {topping.name}</li>
-                      ))}
+                      {item.toppings
+                        .filter((topping) => topping.added)
+                        .map((topping, i) => (
+                          <li key={`added-${i}`}>
+                            <span className='text-green-500'>+</span>{' '}
+                            {topping.name}
+                          </li>
+                        ))}
+                      {item.toppings
+                        .filter((topping) => topping.removed)
+                        .map((topping, i) => (
+                          <li key={`removed-${i}`}>
+                            <span className='text-red-500'>-</span>{' '}
+                            {topping.name} (removed)
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </div>
