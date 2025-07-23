@@ -1,12 +1,29 @@
 'use client'
 
-import { useState } from 'react'
-import { useOrders } from '@/contexts/OrderContext'
-import { OrderStatus } from '@/types'
+import { useState, useEffect } from 'react'
+import { OrderStatus, Order } from '@/types'
+import { getOrders, updateOrderStatus } from '@/lib/order-actions'
 
 export default function StorePage() {
-  const { orders, updateOrderStatus } = useOrders()
+  const [orders, setOrders] = useState<Order[]>([])
   const [filter, setFilter] = useState<OrderStatus | 'all'>('all')
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Load orders on component mount
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        const fetchedOrders = await getOrders()
+        setOrders(fetchedOrders)
+      } catch (error) {
+        console.error('Error fetching orders:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchOrders()
+  }, [])
 
   // Filter orders based on status
   const filteredOrders =
@@ -20,8 +37,21 @@ export default function StorePage() {
   )
 
   // Handle status change
-  const handleStatusChange = (orderId: string, status: OrderStatus) => {
-    updateOrderStatus(orderId, status)
+  const handleStatusChange = async (orderId: string, status: OrderStatus) => {
+    try {
+      const success = await updateOrderStatus(orderId, status)
+
+      if (success) {
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status } : order
+          )
+        )
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error)
+    }
   }
 
   // Format date
@@ -44,7 +74,7 @@ export default function StorePage() {
         <div className='inline-flex border border-gray-800 rounded-md overflow-hidden'>
           <button
             className={`px-4 py-2 ${
-              filter === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-400'
+              filter === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-800'
             }`}
             onClick={() => setFilter('all')}
           >
@@ -54,7 +84,7 @@ export default function StorePage() {
             className={`px-4 py-2 ${
               filter === 'in_progress'
                 ? 'bg-primary text-white'
-                : 'hover:bg-gray-400'
+                : 'hover:bg-gray-800'
             }`}
             onClick={() => setFilter('in_progress')}
           >
@@ -64,7 +94,7 @@ export default function StorePage() {
             className={`px-4 py-2 ${
               filter === 'completed'
                 ? 'bg-primary text-white'
-                : 'hover:bg-gray-400'
+                : 'hover:bg-gray-800'
             }`}
             onClick={() => setFilter('completed')}
           >
@@ -73,8 +103,12 @@ export default function StorePage() {
         </div>
       </div>
 
-      {/* Orders Table */}
-      {sortedOrders.length === 0 ? (
+      {/* Loading State */}
+      {isLoading ? (
+        <div className='text-center py-16'>
+          <p className='text-xl'>Loading orders...</p>
+        </div>
+      ) : sortedOrders.length === 0 ? (
         <div className='text-center py-16'>
           <p className='text-xl text-gray-400'>No orders found</p>
         </div>
@@ -96,15 +130,19 @@ export default function StorePage() {
               {sortedOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className='border-b border-gray-800 hover:bg-primary-hover'
+                  className='border-b border-gray-800 hover:bg-gray-900'
                 >
                   <td className='py-4 px-4'>{order.id}</td>
                   <td className='py-4 px-4'>{formatDate(order.date)}</td>
                   <td className='py-4 px-4'>
                     <div>
                       <p className='font-medium'>{order.customer.name}</p>
-                      <p className='text-sm'>{order.customer.phone}</p>
-                      <p className='text-sm'>{order.customer.address}</p>
+                      <p className='text-sm text-gray-400'>
+                        {order.customer.phone}
+                      </p>
+                      <p className='text-sm text-gray-400'>
+                        {order.customer.address}
+                      </p>
                     </div>
                   </td>
                   <td className='py-4 px-4'>

@@ -1,35 +1,53 @@
 'use client'
 
-import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useOrders } from '@/contexts/OrderContext'
-import { Order } from '@/types'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Order } from '@/types'
+import { getOrderById } from '@/lib/order-actions'
 
 export default function OrderConfirmationPage() {
   const params = useParams()
   const orderId = params?.id as string
-  const { getOrderById } = useOrders()
-  const [order, setOrder] = useState<Order | undefined>()
+  const [order, setOrder] = useState<Order | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    if (!orderId) return
+    async function fetchOrder() {
+      if (!orderId) return
 
-    const foundOrder = getOrderById(orderId)
-    if (foundOrder) {
-      setOrder(foundOrder)
-    } else {
-      // If order not found, redirect to home page
-      router.push('/')
+      try {
+        const orderData = await getOrderById(orderId)
+        if (orderData) {
+          setOrder(orderData)
+        } else {
+          // If order not found, redirect to home page
+          router.push('/')
+        }
+      } catch (error) {
+        console.error('Error fetching order:', error)
+        router.push('/')
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }, [orderId, getOrderById, router])
+
+    fetchOrder()
+  }, [orderId, router])
+
+  if (isLoading) {
+    return (
+      <div className='container mx-auto px-4 py-12 text-center'>
+        <p>Loading order details...</p>
+      </div>
+    )
+  }
 
   if (!order) {
     return (
       <div className='container mx-auto px-4 py-12 text-center'>
-        <p>Loading order details...</p>
+        <p>Order not found. Redirecting...</p>
       </div>
     )
   }

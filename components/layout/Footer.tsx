@@ -6,7 +6,9 @@ export default function Footer() {
       <div className='container mx-auto px-4'>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
           <div>
-            <h3 className='text-xl font-bold mb-4'>BLACK LABEL PIZZA</h3>
+            <h3 className='text-xl font-bold mb-4 font-[Open_Sans]'>
+              BLACK LABEL PIZZA
+            </h3>
             <div className='h-1 w-12 bg-primary mb-6'></div>
             <p className='text-muted mb-4'>
               Authentic Chicago-style pizza made with premium ingredients and

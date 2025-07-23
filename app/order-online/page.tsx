@@ -5,6 +5,8 @@ import { menuItems, appetizers, desserts, drinks } from '../data/menu'
 import { MenuItem } from '@/types'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useCart } from '@/contexts/CartContext'
+import { v4 as uuidv4 } from 'uuid'
 
 // Define types for non-pizza items
 interface SimpleMenuItem {
@@ -18,6 +20,8 @@ type MenuItemType = 'pizzas' | 'appetizers' | 'desserts' | 'drinks'
 
 export default function OrderOnlinePage() {
   const [activeCategory, setActiveCategory] = useState('pizza-classic')
+  const { addToCart } = useCart()
+  const [addedItems, setAddedItems] = useState<Record<string, boolean>>({})
 
   // Filter items based on active category
   const getFilteredItems = () => {
@@ -38,6 +42,36 @@ export default function OrderOnlinePage() {
   }
 
   const { type, items } = getFilteredItems()
+
+  // Handle adding non-pizza items to cart
+  const handleAddToCart = (item: SimpleMenuItem) => {
+    // Generate a unique ID for the item
+    const itemId = `${item.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')}-${uuidv4().slice(0, 8)}`
+
+    // Add item to cart
+    addToCart({
+      id: itemId,
+      name: item.name,
+      price: item.price,
+      quantity: 1,
+    })
+
+    // Show feedback that item was added
+    setAddedItems((prev) => ({
+      ...prev,
+      [itemId]: true,
+    }))
+
+    // Reset feedback after a short delay
+    setTimeout(() => {
+      setAddedItems((prev) => ({
+        ...prev,
+        [itemId]: false,
+      }))
+    }, 1500)
+  }
 
   return (
     <div className='container mx-auto px-4 py-12'>
@@ -152,41 +186,55 @@ export default function OrderOnlinePage() {
 
         {type !== 'pizzas' &&
           // Render other menu items (appetizers, desserts, drinks)
-          (items as SimpleMenuItem[]).map((item, index) => (
-            <div
-              key={index}
-              className={`border border-primary hover:border-accent transition-all ${
-                type === 'appetizers' ? 'h-full flex flex-col' : ''
-              }`}
-            >
-              {item.image && type === 'appetizers' && (
-                <div className='relative h-48 w-full'>
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              )}
+          (items as SimpleMenuItem[]).map((item, index) => {
+            const itemId = `${item.name
+              .toLowerCase()
+              .replace(/\s+/g, '-')}-${index}`
+            const isAdded = addedItems[itemId]
+
+            return (
               <div
-                className={`p-6 ${
-                  type === 'appetizers' ? 'flex flex-col flex-grow' : ''
+                key={index}
+                className={`border border-primary hover:border-accent transition-all ${
+                  type === 'appetizers' ? 'h-full flex flex-col' : ''
                 }`}
               >
-                <div className='flex justify-between items-center mb-3'>
-                  <h3 className='text-xl font-bold'>{item.name}</h3>
-                  <span className='text-xl'>${item.price}</span>
-                </div>
-                <p className='text-muted mb-6'>{item.description}</p>
-                <div className={type === 'appetizers' ? 'mt-auto' : ''}>
-                  <button className='w-full bg-primary text-white py-3 font-medium hover:bg-primary-hover transition-colors cursor-pointer'>
-                    Add to Order
-                  </button>
+                {item.image && type === 'appetizers' && (
+                  <div className='relative h-48 w-full'>
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+                <div
+                  className={`p-6 ${
+                    type === 'appetizers' ? 'flex flex-col flex-grow' : ''
+                  }`}
+                >
+                  <div className='flex justify-between items-center mb-3'>
+                    <h3 className='text-xl font-bold'>{item.name}</h3>
+                    <span className='text-xl'>${item.price}</span>
+                  </div>
+                  <p className='text-muted mb-6'>{item.description}</p>
+                  <div className={type === 'appetizers' ? 'mt-auto' : ''}>
+                    <button
+                      className={`w-full py-3 font-medium transition-colors cursor-pointer ${
+                        isAdded
+                          ? 'bg-green-600 text-white'
+                          : 'bg-primary text-white hover:bg-primary-hover'
+                      }`}
+                      onClick={() => handleAddToCart(item)}
+                    >
+                      {isAdded ? 'Added to Cart!' : 'Add to Order'}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
       </div>
     </div>
   )
