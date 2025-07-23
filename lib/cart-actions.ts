@@ -1,7 +1,7 @@
 'use server'
 
 import { supabase } from './supabase'
-import { CartItem } from '@/types'
+import { CartItem, ToppingItem } from '@/types'
 import { v4 as uuidv4 } from 'uuid'
 
 // Get user ID from headers or generate a new one
@@ -77,7 +77,7 @@ export async function getCartItems(
     price: item.price,
     quantity: item.quantity,
     size: item.size || undefined,
-    toppings: (item.toppings as any) || [],
+    toppings: (item.toppings as ToppingItem[]) || [],
     removedToppings: item.removed_toppings || [],
   }))
 }
@@ -131,7 +131,7 @@ export async function addToCart(
 // Remove item from cart
 export async function removeFromCart(
   productId: string,
-  toppings?: any[],
+  toppings?: ToppingItem[],
   headers?: Headers | Record<string, string>
 ): Promise<void> {
   const userId = await getUserId(headers)
@@ -170,7 +170,7 @@ export async function removeFromCart(
 export async function updateQuantity(
   productId: string,
   quantity: number,
-  toppings?: any[],
+  toppings?: ToppingItem[],
   headers?: Headers | Record<string, string>
 ): Promise<void> {
   const userId = await getUserId(headers)

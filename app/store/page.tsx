@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { OrderStatus } from '@/types'
+import { OrderStatus, Order } from '@/types'
 import { getOrders, updateOrderStatus } from '@/lib/order-actions'
 
 export default function StorePage() {
-  const [orders, setOrders] = useState<any[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [filter, setFilter] = useState<OrderStatus | 'all'>('all')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -147,7 +147,7 @@ export default function StorePage() {
                   </td>
                   <td className='py-4 px-4'>
                     <div className='max-w-xs'>
-                      {order.items.map((item: any, index: number) => (
+                      {order.items.map((item, index) => (
                         <div key={index} className='mb-1 text-sm'>
                           {item.quantity}× {item.name}
                           {item.size && (
@@ -161,18 +161,18 @@ export default function StorePage() {
                               {' '}
                               with{' '}
                               {item.toppings
-                                .filter((t: any) => t.added)
-                                .map((t: any) => t.name)
+                                .filter((t) => t.added)
+                                .map((t) => t.name)
                                 .join(', ')}
-                              {item.toppings.some((t: any) => t.removed) && (
+                              {item.toppings.some((t) => t.removed) && (
                                 <>
-                                  {item.toppings.some((t: any) => t.added)
+                                  {item.toppings.some((t) => t.added)
                                     ? ', '
                                     : ''}
                                   without{' '}
                                   {item.toppings
-                                    .filter((t: any) => t.removed)
-                                    .map((t: any) => t.name)
+                                    .filter((t) => t.removed)
+                                    .map((t) => t.name)
                                     .join(', ')}
                                 </>
                               )}

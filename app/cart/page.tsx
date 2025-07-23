@@ -6,6 +6,7 @@ import { useOrders } from '@/contexts/OrderContext'
 import { CustomerInfo } from '@/types'
 import { useRouter } from 'next/navigation'
 import BackButton from '@/components/ui/BackButton'
+import { ToppingItem } from '@/types'
 
 export default function CartPage() {
   const {
@@ -44,7 +45,7 @@ export default function CartPage() {
   const handleQuantityChange = (
     id: string,
     newQuantity: number,
-    toppings?: any[]
+    toppings?: ToppingItem[]
   ) => {
     updateQuantity(id, newQuantity, toppings)
   }

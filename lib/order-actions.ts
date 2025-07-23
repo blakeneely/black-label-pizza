@@ -1,7 +1,13 @@
 'use server'
 
 import { supabase } from './supabase'
-import { Order, CustomerInfo, CartItem, OrderStatus } from '@/types'
+import {
+  Order,
+  CustomerInfo,
+  CartItem,
+  OrderStatus,
+  ToppingItem,
+} from '@/types'
 import { v4 as uuidv4 } from 'uuid'
 import { clearCart } from './cart-actions'
 
@@ -142,7 +148,7 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     price: item.price,
     quantity: item.quantity,
     size: item.size || undefined,
-    toppings: (item.toppings as any) || [],
+    toppings: (item.toppings as ToppingItem[]) || [],
     removedToppings: item.removed_toppings || [],
   }))
 
@@ -180,7 +186,7 @@ export async function getOrders(): Promise<Order[]> {
   }
 
   // Group order items by order_id
-  const itemsByOrderId: Record<string, any[]> = {}
+  const itemsByOrderId: Record<string, (typeof allOrderItems)[number][]> = {}
   allOrderItems.forEach((item) => {
     if (!itemsByOrderId[item.order_id]) {
       itemsByOrderId[item.order_id] = []
@@ -199,7 +205,7 @@ export async function getOrders(): Promise<Order[]> {
       price: item.price,
       quantity: item.quantity,
       size: item.size || undefined,
-      toppings: (item.toppings as any) || [],
+      toppings: (item.toppings as ToppingItem[]) || [],
       removedToppings: item.removed_toppings || [],
     }))
 
