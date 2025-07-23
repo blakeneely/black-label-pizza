@@ -8,11 +8,18 @@ import { useRouter } from 'next/navigation'
 import BackButton from '@/components/ui/BackButton'
 
 export default function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity, clearCart, cartTotal } =
-    useCart()
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    cartTotal,
+    isLoading,
+  } = useCart()
   const { addOrder } = useOrders()
   const router = useRouter()
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout'>('cart')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Customer information state
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -37,13 +44,9 @@ export default function CartPage() {
   const handleQuantityChange = (
     id: string,
     newQuantity: number,
-    toppings?: Array<{ name: string; price: number }>
+    toppings?: any[]
   ) => {
-    if (newQuantity < 1) {
-      removeFromCart(id, toppings)
-    } else {
-      updateQuantity(id, newQuantity, toppings)
-    }
+    updateQuantity(id, newQuantity, toppings)
   }
 
   // Handle proceed to checkout
@@ -53,31 +56,43 @@ export default function CartPage() {
   }
 
   // Handle place order
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Create a new order
-    const newOrder = {
-      id: `order-${Date.now()}`,
-      items: cartItems,
-      customer: customerInfo,
-      status: 'in_progress' as const,
-      total: cartTotal,
-      date: new Date().toISOString(),
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
+    try {
+      // Create a new order using the server action
+      const result = await addOrder(cartItems, customerInfo, cartTotal)
+
+      if (result.success && result.orderId) {
+        // Explicitly clear the cart on the client side
+        await clearCart()
+
+        // Redirect to confirmation page
+        router.push(`/order-confirmation/${result.orderId}`)
+      } else {
+        alert('There was an error placing your order. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error placing order:', error)
+      alert('There was an error placing your order. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    // Add order to context
-    addOrder(newOrder)
-
-    // Clear cart
-    clearCart()
-
-    // Redirect to confirmation page
-    router.push(`/order-confirmation/${newOrder.id}`)
   }
 
   // Render cart items
   const renderCartItems = () => {
+    if (isLoading) {
+      return (
+        <div className='text-center py-16'>
+          <p className='text-xl'>Loading your cart...</p>
+        </div>
+      )
+    }
+
     if (cartItems.length === 0) {
       return (
         <div className='text-center py-16'>
@@ -332,14 +347,18 @@ export default function CartPage() {
             type='button'
             onClick={() => setCheckoutStep('cart')}
             className='px-6 py-3 border border-gray-800 hover:border-primary transition-colors'
+            disabled={isSubmitting}
           >
             Back to Cart
           </button>
           <button
             type='submit'
-            className='px-6 py-3 bg-primary hover:bg-primary-hover transition-colors'
+            className={`px-6 py-3 bg-primary hover:bg-primary-hover transition-colors ${
+              isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
+            disabled={isSubmitting}
           >
-            Place Order
+            {isSubmitting ? 'Processing...' : 'Place Order'}
           </button>
         </div>
       </form>
@@ -360,7 +379,7 @@ export default function CartPage() {
         <>
           {renderCartItems()}
 
-          {cartItems.length > 0 && (
+          {!isLoading && cartItems.length > 0 && (
             <div className='mt-8 border-t border-gray-800 pt-8'>
               <div className='flex justify-between items-center mb-8'>
                 <span className='text-xl font-bold'>Total:</span>
