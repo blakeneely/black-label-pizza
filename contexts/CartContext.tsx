@@ -8,11 +8,6 @@ import {
   ReactNode,
 } from 'react'
 import { CartItem, ToppingItem } from '@/types'
-import { getUserIdClient } from '@/lib/user-utils'
-
-// Import the cart actions but don't use them directly in client components
-// We'll use these in useEffect for data fetching
-import * as cartActions from '@/lib/cart-actions'
 
 interface CartContextType {
   cartItems: CartItem[]
@@ -37,27 +32,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [itemCount, setItemCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Get the current request headers to pass to server actions
-  const getHeaders = () => {
-    return { cookie: document.cookie }
-  }
-
-  // Load cart from Supabase on initial load
+  // Load cart from localStorage on initial load
   useEffect(() => {
-    async function fetchCart() {
+    function loadCart() {
       try {
-        // Call the server action to get cart items with headers
-        const items = await cartActions.getCartItems(getHeaders())
-        setCartItems(items)
+        const savedCart = localStorage.getItem('cart')
+        if (savedCart) {
+          setCartItems(JSON.parse(savedCart))
+        }
       } catch (error) {
-        console.error('Failed to fetch cart:', error)
+        console.error('Failed to load cart from localStorage:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchCart()
+    loadCart()
   }, [])
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem('cart', JSON.stringify(cartItems))
+    }
+  }, [cartItems, isLoading])
 
   // Calculate cart total and item count whenever cartItems changes
   useEffect(() => {
@@ -93,112 +91,58 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   // Add item to cart
-  const addToCart = async (item: CartItem) => {
-    try {
-      // Optimistically update local state
-      setCartItems((prevItems) => {
-        // Check if item already exists in cart with same toppings
-        const existingItemIndex = prevItems.findIndex(
-          (cartItem) =>
-            cartItem.id === item.id &&
-            areToppingsSame(cartItem.toppings, item.toppings)
-        )
+  const addToCart = (item: CartItem) => {
+    // Check if item already exists in cart with same toppings
+    const existingItemIndex = cartItems.findIndex(
+      (cartItem) =>
+        cartItem.id === item.id &&
+        areToppingsSame(cartItem.toppings, item.toppings)
+    )
 
-        if (existingItemIndex >= 0) {
-          // Item exists, update quantity
-          const updatedItems = [...prevItems]
-          updatedItems[existingItemIndex].quantity += item.quantity
-          return updatedItems
-        } else {
-          // Item doesn't exist, add new item
-          return [...prevItems, item]
-        }
-      })
-
-      // Call server action to update database with headers
-      await cartActions.addToCart(item, getHeaders())
-    } catch (error) {
-      console.error('Failed to add item to cart:', error)
-      // In case of error, refresh cart from server
-      const items = await cartActions.getCartItems(getHeaders())
-      setCartItems(items)
+    if (existingItemIndex >= 0) {
+      // Item exists, update quantity
+      const updatedItems = [...cartItems]
+      updatedItems[existingItemIndex].quantity += item.quantity
+      setCartItems(updatedItems)
+    } else {
+      // Item doesn't exist, add new item
+      setCartItems([...cartItems, item])
     }
   }
 
   // Remove item from cart
-  const removeFromCart = async (id: string, toppings?: ToppingItem[]) => {
-    try {
-      // Optimistically update local state
-      setCartItems((prevItems) =>
-        prevItems.filter(
-          (item) =>
-            !(item.id === id && areToppingsSame(item.toppings, toppings))
-        )
+  const removeFromCart = (id: string, toppings?: ToppingItem[]) => {
+    setCartItems(
+      cartItems.filter(
+        (item) => !(item.id === id && areToppingsSame(item.toppings, toppings))
       )
-
-      // Call server action to update database with headers
-      await cartActions.removeFromCart(id, toppings as any, getHeaders())
-    } catch (error) {
-      console.error('Failed to remove item from cart:', error)
-      // In case of error, refresh cart from server
-      const items = await cartActions.getCartItems(getHeaders())
-      setCartItems(items)
-    }
+    )
   }
 
   // Update item quantity
-  const updateQuantity = async (
+  const updateQuantity = (
     id: string,
     quantity: number,
     toppings?: ToppingItem[]
   ) => {
-    try {
-      // Optimistically update local state
-      setCartItems((prevItems) => {
-        if (quantity <= 0) {
-          return prevItems.filter(
-            (item) =>
-              !(item.id === id && areToppingsSame(item.toppings, toppings))
-          )
-        }
-
-        return prevItems.map((item) => {
-          if (item.id === id && areToppingsSame(item.toppings, toppings)) {
-            return { ...item, quantity }
-          }
-          return item
-        })
-      })
-
-      // Call server action to update database with headers
-      await cartActions.updateQuantity(
-        id,
-        quantity,
-        toppings as any,
-        getHeaders()
-      )
-    } catch (error) {
-      console.error('Failed to update quantity:', error)
-      // In case of error, refresh cart from server
-      const items = await cartActions.getCartItems(getHeaders())
-      setCartItems(items)
+    if (quantity <= 0) {
+      removeFromCart(id, toppings)
+      return
     }
+
+    setCartItems(
+      cartItems.map((item) => {
+        if (item.id === id && areToppingsSame(item.toppings, toppings)) {
+          return { ...item, quantity }
+        }
+        return item
+      })
+    )
   }
 
   // Clear cart
-  const clearCart = async () => {
-    try {
-      // Optimistically update local state
-      setCartItems([])
-
-      // Call server action to update database with headers
-      await cartActions.clearCart(getHeaders())
-    } catch (error) {
-      console.error('Failed to clear cart:', error)
-      // In case of error, refresh cart from server
-      const items = await cartActions.getCartItems(getHeaders())
-      setCartItems(items)
-    }
+  const clearCart = () => {
+    setCartItems([])
   }
 
   return (

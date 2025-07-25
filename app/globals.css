@@ -85,6 +85,9 @@ body {
 .bg-accent {
   background-color: var(--color-accent);
 }
+.bg-accent-hover {
+  background-color: var(--color-accent-hover);
+}
 .text-accent {
   color: var(--color-accent);
 }
@@ -102,7 +105,9 @@ body {
 
 /* Always light text on accent background */
 .bg-accent,
-.hover\:bg-accent:hover {
+.hover\:bg-accent:hover,
+.bg-accent-hover,
+.hover\:bg-accent-hover:hover {
   color: white !important;
 }
 
@@ -131,4 +136,7 @@ body {
 }
 .hover\:bg-accent:hover {
   background-color: var(--color-accent) !important;
+}
+.hover\:bg-accent-hover:hover {
+  background-color: var(--color-accent-hover) !important;
 }

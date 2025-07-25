@@ -18,7 +18,9 @@ interface OrderContextType {
     total: number
   ) => Promise<{ success: boolean; orderId?: string }>
   updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<boolean>
+  deleteOrder: (orderId: string) => Promise<boolean>
   getOrderById: (orderId: string) => Promise<Order | null>
+  getOrdersByPhoneNumber: (phoneNumber: string) => Promise<Order[]>
   isLoading: boolean
 }
 
@@ -27,11 +29,6 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined)
 export function OrderProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
-  // Get the current request headers to pass to server actions
-  const getHeaders = () => {
-    return { cookie: document.cookie }
-  }
 
   // Load orders from Supabase on initial load
   useEffect(() => {
@@ -56,12 +53,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     total: number
   ) => {
     try {
-      const result = await orderActions.createOrder(
-        items,
-        customerInfo,
-        total,
-        getHeaders()
-      )
+      const result = await orderActions.createOrder(items, customerInfo, total)
 
       if (result.success && result.orderId) {
         // Fetch the new order to add to our state
@@ -99,6 +91,25 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Delete an order
+  const deleteOrder = async (orderId: string) => {
+    try {
+      const success = await orderActions.deleteOrder(orderId)
+
+      if (success) {
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.filter((order) => order.id !== orderId)
+        )
+      }
+
+      return success
+    } catch (error) {
+      console.error('Failed to delete order:', error)
+      return false
+    }
+  }
+
   // Get order by ID
   const getOrderById = async (orderId: string) => {
     try {
@@ -109,13 +120,25 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Get orders by phone number
+  const getOrdersByPhoneNumber = async (phoneNumber: string) => {
+    try {
+      return await orderActions.getOrdersByPhoneNumber(phoneNumber)
+    } catch (error) {
+      console.error('Failed to get orders by phone number:', error)
+      return []
+    }
+  }
+
   return (
     <OrderContext.Provider
       value={{
         orders,
         addOrder,
         updateOrderStatus,
+        deleteOrder,
         getOrderById,
+        getOrdersByPhoneNumber,
         isLoading,
       }}
     >
