@@ -51,64 +51,29 @@ export interface Database {
         Row: {
           id: string
           created_at: string
-          user_id: string
+          phone_number: string
           customer_info: Json
           status: string
           total: number
+          items: Json
         }
         Insert: {
           id?: string
           created_at?: string
-          user_id: string
+          phone_number: string
           customer_info: Json
           status: string
           total: number
+          items: Json
         }
         Update: {
           id?: string
           created_at?: string
-          user_id?: string
+          phone_number?: string
           customer_info?: Json
           status?: string
           total?: number
-        }
-      }
-      order_items: {
-        Row: {
-          id: string
-          created_at: string
-          order_id: string
-          product_id: string
-          product_name: string
-          price: number
-          quantity: number
-          size: string | null
-          toppings: Json | null
-          removed_toppings: string[] | null
-        }
-        Insert: {
-          id?: string
-          created_at?: string
-          order_id: string
-          product_id: string
-          product_name: string
-          price: number
-          quantity: number
-          size?: string | null
-          toppings?: Json | null
-          removed_toppings?: string[] | null
-        }
-        Update: {
-          id?: string
-          created_at?: string
-          order_id?: string
-          product_id?: string
-          product_name?: string
-          price?: number
-          quantity?: number
-          size?: string | null
-          toppings?: Json | null
-          removed_toppings?: string[] | null
+          items?: Json
         }
       }
     }

@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import { OrderStatus, Order } from '@/types'
-import { getOrders, updateOrderStatus } from '@/lib/order-actions'
+import { getOrders, updateOrderStatus, deleteOrder } from '@/lib/order-actions'
+import {
+  FaCheck,
+  FaTrash,
+  FaUndo,
+  FaCheckCircle,
+  FaTimes,
+} from 'react-icons/fa'
 
 export default function StorePage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [filter, setFilter] = useState<OrderStatus | 'all'>('all')
   const [isLoading, setIsLoading] = useState(true)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   // Load orders on component mount
   useEffect(() => {
@@ -51,6 +59,23 @@ export default function StorePage() {
       }
     } catch (error) {
       console.error('Error updating order status:', error)
+    }
+  }
+
+  // Handle delete order
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      const success = await deleteOrder(orderId)
+
+      if (success) {
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.filter((order) => order.id !== orderId)
+        )
+        setConfirmDelete(null)
+      }
+    } catch (error) {
+      console.error('Error deleting order:', error)
     }
   }
 
@@ -188,7 +213,7 @@ export default function StorePage() {
                       className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                         order.status === 'in_progress'
                           ? 'bg-yellow-500 text-yellow-900'
-                          : 'bg-green-500 text-green-900'
+                          : 'bg-primary text-white'
                       }`}
                     >
                       {order.status === 'in_progress'
@@ -197,25 +222,56 @@ export default function StorePage() {
                     </span>
                   </td>
                   <td className='py-4 px-4'>
-                    {order.status === 'in_progress' ? (
-                      <button
-                        onClick={() =>
-                          handleStatusChange(order.id, 'completed')
-                        }
-                        className='px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors'
-                      >
-                        Mark Complete
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() =>
-                          handleStatusChange(order.id, 'in_progress')
-                        }
-                        className='px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition-colors'
-                      >
-                        Reopen
-                      </button>
-                    )}
+                    <div className='flex space-x-3'>
+                      {order.status === 'in_progress' ? (
+                        <button
+                          onClick={() =>
+                            handleStatusChange(order.id, 'completed')
+                          }
+                          className='p-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors'
+                          title='Mark Complete'
+                        >
+                          <FaCheck size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            handleStatusChange(order.id, 'in_progress')
+                          }
+                          className='p-2 bg-yellow-600 text-white rounded-full hover:bg-yellow-700 transition-colors'
+                          title='Reopen'
+                        >
+                          <FaUndo size={16} />
+                        </button>
+                      )}
+
+                      {confirmDelete === order.id ? (
+                        <div className='flex space-x-2'>
+                          <button
+                            onClick={() => handleDeleteOrder(order.id)}
+                            className='p-2 bg-accent text-white rounded-full hover:bg-accent-hover transition-colors'
+                            title='Confirm Delete'
+                          >
+                            <FaCheckCircle size={16} />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete(null)}
+                            className='p-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors'
+                            title='Cancel'
+                          >
+                            <FaTimes size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDelete(order.id)}
+                          className='p-2 bg-accent text-white rounded-full hover:bg-accent-hover transition-colors'
+                          title='Remove'
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -230,8 +286,16 @@ export default function StorePage() {
         <ul className='list-disc pl-6 space-y-2'>
           <li>Monitor this page for new orders.</li>
           <li>
-            Click &quot;Mark Complete&quot; when an order has been prepared and
-            delivered.
+            Click <FaCheck className='inline text-primary' size={14} /> to mark
+            an order as complete when it has been prepared and delivered.
+          </li>
+          <li>
+            Click <FaTrash className='inline text-accent' size={14} /> to
+            permanently remove an order from the system.
+          </li>
+          <li>
+            Click <FaUndo className='inline text-yellow-600' size={14} /> to
+            reopen a completed order if needed.
           </li>
           <li>Use the filter buttons to view orders by status.</li>
           <li>

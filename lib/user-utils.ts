@@ -1,22 +1,26 @@
-import { v4 as uuidv4 } from 'uuid'
+// This file is kept for backwards compatibility
+// We now use phone numbers for user identification instead of UUIDs
 
-// Client-side version for use in client components
-export function getUserIdClient(): string {
+export function getUserPhone(): string | null {
   if (typeof window === 'undefined') {
-    return uuidv4() // Fallback for SSR
+    return null // Not available in server-side rendering
   }
 
-  let userId = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith('userId='))
-    ?.split('=')[1]
+  return localStorage.getItem('userPhone')
+}
 
-  if (!userId) {
-    userId = uuidv4()
-    document.cookie = `userId=${userId}; path=/; max-age=${
-      60 * 60 * 24 * 365
-    }; SameSite=Strict`
+export function setUserPhone(phone: string): void {
+  if (typeof window === 'undefined') {
+    return // Not available in server-side rendering
   }
 
-  return userId
+  localStorage.setItem('userPhone', phone)
+}
+
+export function clearUserPhone(): void {
+  if (typeof window === 'undefined') {
+    return // Not available in server-side rendering
+  }
+
+  localStorage.removeItem('userPhone')
 }
