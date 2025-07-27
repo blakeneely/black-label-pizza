@@ -15,7 +15,7 @@ export default function Home() {
               Authentic tavern pizzas made with premium ingredients and
               traditional recipes.
             </p>
-            <p className='text-xl mb-8'>Call (312) 555-0123 to order now!</p>
+            <p className='text-xl mb-8'>Call (612) 509-2970 to order now!</p>
             <div className='flex gap-4'>
               <Link
                 href='/menu'

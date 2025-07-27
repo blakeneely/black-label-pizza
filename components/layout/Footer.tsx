@@ -33,7 +33,7 @@ export default function Footer() {
             <ul className='text-muted'>
               <li>123 Pizza Street</li>
               <li>Nashville, TN 37205</li>
-              <li>(312) 555-0123</li>
+              <li>(612) 509-2970</li>
               <li>info@blacklabelpizza.com</li>
             </ul>
           </div>

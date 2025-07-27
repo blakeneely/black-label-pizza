@@ -140,3 +140,27 @@ body {
 .hover\:bg-accent-hover:hover {
   background-color: var(--color-accent-hover) !important;
 }
+
+/* Table row hover styles */
+.light-theme tr.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.dark-theme tr.hover\:bg-gray-900:hover,
+tr.dark\:hover\:bg-gray-900:hover {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+/* Filter button hover styles */
+.light-theme button.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.dark-theme button.hover\:bg-gray-800:hover,
+button.dark\:hover\:bg-gray-800:hover {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}

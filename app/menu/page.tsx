@@ -16,7 +16,7 @@ export default function MenuPage() {
 
           <div className='space-y-6'>
             {appetizers.map((item, index) => (
-              <div key={index} className='border border-primary p-4 rounded-sm'>
+              <div key={index} className='border border-primary p-4'>
                 <div className='flex justify-between items-baseline'>
                   <h3 className='text-xl font-bold'>{item.name}</h3>
                   <span className='text-lg'>${item.price}</span>
@@ -44,10 +44,7 @@ export default function MenuPage() {
               {menuItems
                 .filter((pizza) => pizza.category === 'classic')
                 .map((pizza) => (
-                  <div
-                    key={pizza.id}
-                    className='border border-primary p-4 rounded-sm'
-                  >
+                  <div key={pizza.id} className='border border-primary p-4'>
                     <div className='flex justify-between items-baseline'>
                       <h4 className='text-xl font-bold'>{pizza.name}</h4>
                       <span className='text-lg'>${pizza.price}</span>
@@ -67,10 +64,7 @@ export default function MenuPage() {
               {menuItems
                 .filter((pizza) => pizza.category === 'specialty')
                 .map((pizza) => (
-                  <div
-                    key={pizza.id}
-                    className='border border-primary p-4 rounded-sm'
-                  >
+                  <div key={pizza.id} className='border border-primary p-4'>
                     <div className='flex justify-between items-baseline'>
                       <h4 className='text-xl font-bold'>{pizza.name}</h4>
                       <span className='text-lg'>${pizza.price}</span>
@@ -95,10 +89,7 @@ export default function MenuPage() {
               {menuItems
                 .filter((pizza) => pizza.category === 'vegetarian')
                 .map((pizza) => (
-                  <div
-                    key={pizza.id}
-                    className='border border-primary p-4 rounded-sm'
-                  >
+                  <div key={pizza.id} className='border border-primary p-4'>
                     <div className='flex justify-between items-baseline'>
                       <h4 className='text-xl font-bold'>{pizza.name}</h4>
                       <span className='text-lg'>${pizza.price}</span>
@@ -120,7 +111,7 @@ export default function MenuPage() {
 
           <div className='space-y-6'>
             {desserts.map((item, index) => (
-              <div key={index} className='border border-primary p-4 rounded-sm'>
+              <div key={index} className='border border-primary p-4'>
                 <div className='flex justify-between items-baseline'>
                   <h3 className='text-xl font-bold'>{item.name}</h3>
                   <span className='text-lg'>${item.price}</span>
@@ -141,7 +132,7 @@ export default function MenuPage() {
 
           <div className='space-y-6'>
             {drinks.map((item, index) => (
-              <div key={index} className='border border-primary p-4 rounded-sm'>
+              <div key={index} className='border border-primary p-4'>
                 <div className='flex justify-between items-baseline'>
                   <h3 className='text-xl font-bold'>{item.name}</h3>
                   <span className='text-lg'>${item.price}</span>
