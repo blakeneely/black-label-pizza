@@ -96,10 +96,12 @@ export default function StorePage() {
 
       {/* Filter Controls */}
       <div className='mb-8 flex justify-center'>
-        <div className='inline-flex border border-gray-800 rounded-md overflow-hidden'>
+        <div className='inline-flex border border-gray-300 dark:border-gray-800 overflow-hidden'>
           <button
             className={`px-4 py-2 ${
-              filter === 'all' ? 'bg-primary text-white' : 'hover:bg-gray-800'
+              filter === 'all'
+                ? 'bg-primary text-white'
+                : 'hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white'
             }`}
             onClick={() => setFilter('all')}
           >
@@ -109,7 +111,7 @@ export default function StorePage() {
             className={`px-4 py-2 ${
               filter === 'in_progress'
                 ? 'bg-primary text-white'
-                : 'hover:bg-gray-800'
+                : 'hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white'
             }`}
             onClick={() => setFilter('in_progress')}
           >
@@ -119,7 +121,7 @@ export default function StorePage() {
             className={`px-4 py-2 ${
               filter === 'completed'
                 ? 'bg-primary text-white'
-                : 'hover:bg-gray-800'
+                : 'hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white'
             }`}
             onClick={() => setFilter('completed')}
           >
@@ -139,9 +141,9 @@ export default function StorePage() {
         </div>
       ) : (
         <div className='overflow-x-auto'>
-          <table className='w-full border-collapse'>
+          <table className='w-full border-collapse text-theme'>
             <thead>
-              <tr className='border-b border-gray-800'>
+              <tr className='border-b border-gray-300 dark:border-gray-800'>
                 <th className='py-4 px-4 text-left'>Order ID</th>
                 <th className='py-4 px-4 text-left'>Date</th>
                 <th className='py-4 px-4 text-left'>Customer</th>
@@ -155,17 +157,17 @@ export default function StorePage() {
               {sortedOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className='border-b border-gray-800 hover:bg-gray-900'
+                  className='border-b border-gray-300 dark:border-gray-800 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-900 dark:hover:text-white'
                 >
                   <td className='py-4 px-4'>{order.id}</td>
                   <td className='py-4 px-4'>{formatDate(order.date)}</td>
                   <td className='py-4 px-4'>
                     <div>
                       <p className='font-medium'>{order.customer.name}</p>
-                      <p className='text-sm text-gray-400'>
+                      <p className='text-sm text-gray-500 dark:text-gray-400'>
                         {order.customer.phone}
                       </p>
-                      <p className='text-sm text-gray-400'>
+                      <p className='text-sm text-gray-500 dark:text-gray-400'>
                         {order.customer.address}
                       </p>
                     </div>
@@ -176,13 +178,13 @@ export default function StorePage() {
                         <div key={index} className='mb-1 text-sm'>
                           {item.quantity}× {item.name}
                           {item.size && (
-                            <span className='text-xs text-gray-400'>
+                            <span className='text-xs text-gray-500 dark:text-gray-400'>
                               {' '}
                               ({item.size})
                             </span>
                           )}
                           {item.toppings && item.toppings.length > 0 && (
-                            <span className='text-xs text-gray-400'>
+                            <span className='text-xs text-gray-500 dark:text-gray-400'>
                               {' '}
                               with{' '}
                               {item.toppings
@@ -210,9 +212,9 @@ export default function StorePage() {
                   <td className='py-4 px-4'>${order.total.toFixed(2)}</td>
                   <td className='py-4 px-4'>
                     <span
-                      className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                      className={`inline-block px-2 py-1 text-xs font-medium ${
                         order.status === 'in_progress'
-                          ? 'bg-yellow-500 text-yellow-900'
+                          ? 'bg-yellow-500 text-black'
                           : 'bg-primary text-white'
                       }`}
                     >
@@ -281,7 +283,7 @@ export default function StorePage() {
       )}
 
       {/* Employee Instructions */}
-      <div className='mt-12 p-6 border border-gray-800 rounded-md'>
+      <div className='mt-12 p-6 border border-gray-300 dark:border-gray-800'>
         <h2 className='text-xl font-bold mb-4'>Employee Instructions</h2>
         <ul className='list-disc pl-6 space-y-2'>
           <li>Monitor this page for new orders.</li>

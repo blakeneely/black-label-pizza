@@ -49,7 +49,7 @@ export default function Header() {
           />
           <div className='flex flex-col -space-y-1 font-[Open_Sans]'>
             <h1 className='text-xl font-bold'>BLACK LABEL</h1>
-            <span className='text-xs tracking-widest text-accent'>PIZZA</span>
+            <span className='text-sm tracking-widest text-accent'>PIZZA</span>
           </div>
         </Link>
 
