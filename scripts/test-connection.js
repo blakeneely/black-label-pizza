@@ -13,43 +13,33 @@ async function testConnection() {
     console.log('Testing Supabase connection...')
     console.log('URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
 
-    // Test if we can access the cart_items table
-    const { data: cartItems, error: cartError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .limit(1)
-
-    if (cartError) {
-      console.error('Cart items table test failed:', cartError)
-    } else {
-      console.log('Successfully connected to cart_items table!')
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_URL is not set in .env.local')
+      return
     }
 
-    // Test if we can access the orders table
+    if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is not set in .env.local')
+      return
+    }
+
+    // Test if we can access the orders table (simplified schema)
     const { data: orders, error: ordersError } = await supabase
       .from('orders')
       .select('*')
       .limit(1)
 
     if (ordersError) {
-      console.error('Orders table test failed:', ordersError)
+      console.error('❌ Orders table test failed:', ordersError.message)
+      if (ordersError.message.includes('relation "public.orders" does not exist')) {
+        console.error('   → The orders table does not exist. Please run the SQL migration in the Supabase SQL Editor.')
+      }
     } else {
-      console.log('Successfully connected to orders table!')
-    }
-
-    // Test if we can access the order_items table
-    const { data: orderItems, error: orderItemsError } = await supabase
-      .from('order_items')
-      .select('*')
-      .limit(1)
-
-    if (orderItemsError) {
-      console.error('Order items table test failed:', orderItemsError)
-    } else {
-      console.log('Successfully connected to order_items table!')
+      console.log('✅ Successfully connected to orders table!')
+      console.log(`   Found ${orders?.length || 0} order(s)`)
     }
   } catch (error) {
-    console.error('Error testing connection:', error)
+    console.error('❌ Error testing connection:', error)
   }
 }
 
